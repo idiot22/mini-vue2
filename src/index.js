@@ -1,1 +1,3 @@
-export const aa = 2
+export function Vue(options){
+  this._init(options)
+}
