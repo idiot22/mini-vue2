@@ -1,4 +1,5 @@
 import { initState } from './state'
+import { compileToFunction } from './compiler/index'
 export function initMixin(Vue){
   Vue.prototype._init = (options, vm) => {
     vm.$options = options
@@ -14,11 +15,14 @@ export function initMixin(Vue){
     if(!ops.render){
       let template
       if(!ops.template && el){
+        // 没有render，没有template，就取模版文件的内容，是获取字符串
         template = el.outerHTML
       }else{
         template = ops.template
       }
       if(template){
+        // 要将对应的模版编译成render函数
+        console.log(template)
         const render = compileToFunction(template)
         ops.render = render
       }
