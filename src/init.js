@@ -22,7 +22,6 @@ export function initMixin(Vue){
       }
       if(template){
         // 要将对应的模版编译成render函数
-        console.log(template)
         const render = compileToFunction(template)
         ops.render = render
       }

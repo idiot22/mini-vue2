@@ -46,11 +46,13 @@ export function parseHTML(html){
   }
   function chars(text){
     text = text.replace(/\s/g,'')
-    currentParent.children.push({
-      type: TEXT_TYPE,
-      text,
-      parent: currentParent
-    })
+    if(text){
+      currentParent.children.push({
+        type: TEXT_TYPE,
+        text,
+        parent: currentParent
+      })
+    }
   }
   function end(tag){
     stack.pop()
@@ -79,7 +81,6 @@ export function parseHTML(html){
       if(end){
         advance(end[0].length)
       }
-      console.log(html, match)
       return match
     }
 
@@ -108,4 +109,5 @@ export function parseHTML(html){
       advance(text.length)
     }
   }
+  return root
 }
