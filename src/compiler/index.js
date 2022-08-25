@@ -60,7 +60,11 @@ function codegen(ast){
 export function compileToFunction(template){
   // 将template转化为ast语法树
   let ast = parseHTML(template)
-  console.log(ast, 'ast')
+  console.log(ast, 'ast语法树')
   let code = codegen(ast)
-  console.log(code)
+  console.log(code, 'ast语法树生成的render函数字符串')
+  code = `with(this){return ${code}}`
+  let render = new Function(code)
+  console.log(render)
+  return render
 }
