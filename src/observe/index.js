@@ -1,5 +1,6 @@
 import { ArrayMethods } from './array'
 import { hasOwn } from '../utils'
+import { Dep } from './dep'
 // 响应式入口
 export function observe(data){
   if(typeof data !== 'object' || data === null){
@@ -40,11 +41,16 @@ class Observer{
 }
 
 export function defineReactive(target, key, value){
+  // 每个属性都有一个依赖管理器  
+  let dep = new Dep()
   let val = value ?? target[key]
   observe(target[key])
   Object.defineProperty(target, key, {
     get(){
-      console.log(`get ${key}`)
+      if(Dep.target){
+        // 把谁用到了这属性，存在dep中，谁就是依赖
+        dep.depend()
+      }
       return val
     },
     set(newValue){
