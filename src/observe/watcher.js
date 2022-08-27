@@ -27,4 +27,35 @@ export class Watcher{
       dep.addSub(this)
     }
   }
+  update(){
+    queueWatcher(this)
+  }
+  run(){
+    this.get()
+  }
+}
+
+let queue = []
+let has = {}
+let pending = false
+function flushSchedulerQueue(){
+  // 拷贝一份进行刷新
+  let flushQueue = queue.slice(0)
+  queue = []
+  has = {}
+  pending = false
+  // 在刷新的过程中可能还有新的watcher，重新放到queue中
+  flushQueue.forEach(q => q.run())
+}
+function queueWatcher(watcher){
+  const id = watcher.id
+  if(!has[id]){
+    queue.push(watcher)
+    has[id] = true
+    // 不管我们的update执行多少次，最终只执行一轮刷新操作
+    if(pending){
+      setTimeout(flushSchedulerQueue, 0)
+      pending = true
+    }
+  }
 }
