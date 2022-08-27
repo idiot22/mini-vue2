@@ -15,6 +15,7 @@ methodsToPatch.forEach(method => {
     if(inserted){
       this.__ob__.observeArray()
     }
+    ob.dep.notify()
     return val
   }
 })

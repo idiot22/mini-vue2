@@ -14,6 +14,9 @@ export class Dep {
   addSub(watcher){
     this.subs.push(watcher)
   }
+  notify(){
+    this.subs.forEach(sub=>sub.update())
+  }
 }
 Dep.target = null
 const targetStack = []
