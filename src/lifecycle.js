@@ -71,3 +71,10 @@ export function mountComponent(vm, el){
   // 根据虚拟dom生成真实dom
   // 插入到el元素中
 }
+
+export function callHook(vm, hook){
+  const handlers = vm.$options[hook]
+  if(handlers){
+    handlers.forEach(handler=>handler.call(vm))
+  }
+}
