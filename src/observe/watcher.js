@@ -59,3 +59,22 @@ function queueWatcher(watcher){
     }
   }
 }
+let callbacks = []
+let waiting = false
+function flushCallbacks(){
+  let cbs = callbacks.slice(0)
+  waiting = false
+  callbacks = []
+  cbs.forEach(cb => cb())
+  waiting = false
+}
+// nextTick不是创建了一个异步任务， 而是将这个任务维护到了队列中而已
+// 内部没有直接采用某个api，而是采用优雅降级的方式
+// 内部先采用promise，不兼容就mutationObserver， 不兼容就setImmediate， settimeout
+export function nextTick(cb){
+  callbacks.push(cb)
+  if(!waiting){
+    setTimeout(flushCallbacks(), 0)
+    waiting = true
+  }
+}
