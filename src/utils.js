@@ -1,3 +1,4 @@
+import { strats } from './globalApi'
 export function hasOwn(data, key){
   return Object.hasOwn(data, key)
 }
@@ -20,4 +21,5 @@ export function mergeOptions(parent, child){
       options[key] = child[key] || parent[key]
     }
   }
+  return options
 }

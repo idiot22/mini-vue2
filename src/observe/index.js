@@ -62,7 +62,7 @@ export function defineReactive(target, key, value){
       if(Dep.target){
         // 把谁用到了这属性，存在dep中，谁就是依赖
         dep.depend()
-        if(childObj){
+        if(typeof childObj === 'object'){
           // 父对象，数组被调用时，它的子元素要收集一下父元素调用的依赖，这样子元素改变，父元素使用的地方也一起改变
           childObj.dep.depend()
           // arr = [1,2,[1,2]] 模版{{arr}} arr[2].push(2)没变化

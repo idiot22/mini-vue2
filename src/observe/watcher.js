@@ -9,15 +9,18 @@ export class Watcher{
     this.deps = []
     this.depIds = new Set()
     this.vm = vm
-    this.get()
+    this.lazy = options.lazy
+    this.dirty = this.lazy
+    this.lazy ? undefined : this.get()
   }
   get(){
     const vm = this.vm
     // 调用方法的时候需要把当前watcher放置在全局唯一的值，并且放入数组，这样子watcher执行完，还可以继续回到父watcher执行
     pushTarget(this)
-    this.getter.call(vm, vm)
+    let value = this.getter.call(vm, vm)
     // 关闭 Dep.target，Dep.target = null
     popTarget()
+    return value
   }
   addDep(dep){
     let id = dep.id
@@ -32,6 +35,17 @@ export class Watcher{
   }
   run(){
     this.get()
+  }
+  evaluate(){
+    this.value = this.get()
+    this.dirty = false
+  }
+  depend(){
+    let i = this.deps.length
+    while(i--){
+      // 让计算属性watcher，也收集渲染watcher
+      this.deps[i].depend()
+    }
   }
 }
 

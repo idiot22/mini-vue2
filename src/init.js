@@ -4,7 +4,7 @@ import { compileToFunction } from './compiler/index'
 import { mergeOptions } from './utils'
 export function initMixin(Vue){
   Vue.prototype._init = (options, vm) => {
-    vm.$options = mergeOptions(this.constructor.options, options)
+    vm.$options = mergeOptions(vm.constructor.$options ?? {}, options)
     callHook(vm, 'beforeCreate')
     initState(vm)
     callHook(vm, 'created')
