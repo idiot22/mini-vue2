@@ -2,6 +2,7 @@ import { initState } from './state'
 import { callHook, mountComponent } from './lifecycle'
 import { compileToFunction } from './compiler/index'
 import { mergeOptions } from './utils'
+import { Watcher } from './observe/watcher'
 export function initMixin(Vue){
   Vue.prototype._init = (options, vm) => {
     vm.$options = mergeOptions(vm.constructor.$options ?? {}, options)
@@ -31,5 +32,8 @@ export function initMixin(Vue){
       }
     }
     mountComponent(vm, el)
+  }
+  Vue.prototype.$watch = function(exprOrFn, cb, options){
+    new Watcher(this, exprOrFn, {user: true}, cb)
   }
 }

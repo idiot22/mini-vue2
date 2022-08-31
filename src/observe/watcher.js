@@ -1,18 +1,27 @@
 import {Dep, pushTarget, popTarget} from './dep'
 let id = 0
 export class Watcher{
-  constructor(vm, fn, options){
+  constructor(vm, exprOrFn, options, cb){
     this.id = id++
     this.renderWatcher = options
     // 调用这函数，函数中会发生取值，触发getter，进而收集依赖
-    this.getter = fn
+    if(typeof exprOrFn === 'string'){
+      this.getter = function(){
+        return vm[exprOrFn]
+      }
+    }else{
+      this.getter = exprOrFn
+    }
     this.deps = []
     this.depIds = new Set()
     this.vm = vm
+    // 标识是否是用户创建的
+    this.user = options.user
     this.lazy = options.lazy
     this.dirty = this.lazy
-    this.lazy ? undefined : this.get()
+    this.value = this.lazy ? undefined : this.get()
   }
+  // 调用收集依赖的方法
   get(){
     const vm = this.vm
     // 调用方法的时候需要把当前watcher放置在全局唯一的值，并且放入数组，这样子watcher执行完，还可以继续回到父watcher执行
@@ -33,8 +42,13 @@ export class Watcher{
   update(){
     queueWatcher(this)
   }
+  // 实际更新运行的方法
   run(){
-    this.get()
+    let oldValue = this.value
+    let newValue = this.get()
+    if(this.user){
+      this.cb.call(this.vm, newValue, oldValue)
+    }
   }
   evaluate(){
     this.value = this.get()
