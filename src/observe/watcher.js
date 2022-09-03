@@ -20,6 +20,7 @@ export class Watcher{
     this.lazy = options.lazy
     this.dirty = this.lazy
     this.value = this.lazy ? undefined : this.get()
+    this.cb = cb
   }
   // 调用收集依赖的方法
   get(){

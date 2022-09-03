@@ -34,6 +34,6 @@ export function initMixin(Vue){
     mountComponent(vm, el)
   }
   Vue.prototype.$watch = function(exprOrFn, cb, options){
-    new Watcher(this, exprOrFn, {user: true}, cb)
+    new Watcher(this, exprOrFn, {user: true, ...options}, cb)
   }
 }
