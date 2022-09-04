@@ -5,8 +5,13 @@ export function initLifeCycle(Vue){
   Vue.prototype._update = function(vnode){
     const vm = this
     const el = vm.$el
-    // 既可以初始化又可以更新
-    patch(el, vnode)
+    const preVnode = vm._vnode
+    vm._vnode = vnode
+    if(preVnode){
+      vm.$el = patch(preVnode, vnode)
+    }else{
+      vm.$el = patch(el, vnode)
+    }
   }
   Vue.prototype._c = function(){
     return createElement(this, ...arguments)

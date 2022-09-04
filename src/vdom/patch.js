@@ -1,9 +1,21 @@
 import { isSameVnode } from ".";
-
+function createComponent(vnode){
+  let i = vnode.data
+  if((i=i.hook) && (i=i.init)){
+    // 初始化组件
+    i(vnode)
+  }
+  if(vnode.componentInstance){
+    return true
+  }
+}
 // 虚拟dom创建真是dom
 export function createElm(vnode){
   let { tag, data, children, text } = vnode
   if(typeof tag === 'string'){
+    if(createComponent(vnode)){
+      return vnode.componentInstance.$el
+    }
     vnode.el = document.createElement(tag)
     patchProps(vnode.el, {}, data)
     children.forEach(child => {
@@ -40,6 +52,9 @@ export function patchProps(el, oldProps, props){
 }
 // 既可以初始化又可以更新
 export function patch(oldVNode, vnode){
+  if(!oldVNode){
+    return
+  }
   const isRealElement = oldVNode.nodeType
   if(isRealElement){
     const ele = oldVNode
