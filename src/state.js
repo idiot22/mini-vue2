@@ -1,6 +1,6 @@
 import { Dep } from './observe/dep'
 import { observe } from './observe/index'
-import { Watcher } from './observe/watcher'
+import { nextTick, Watcher } from './observe/watcher'
 export function initState(vm){
   let opts = vm.$options
   if(opts.data){
@@ -90,4 +90,11 @@ function createWatcher(vm, key, handler){
     handler = vm[handler]
   }
   return vm.$watch(key, handler)
+}
+
+export function initStateMixin(Vue){
+  Vue.prototype.$nextTick = nextTick
+  Vue.prototype.$watch = function(exprOrFn, cb, options){
+    new Watcher(this, exprOrFn, {user: true, ...options}, cb)
+  }
 }
